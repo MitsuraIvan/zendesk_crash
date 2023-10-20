@@ -1,0 +1,73 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+repositories {
+    maven { url "https://maven.google.com" }
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://maven.fabric.io/public' }
+    maven { url 'https://zendesk.jfrog.io/zendesk/repo' }
+    mavenCentral()
+}
+
+
+android {
+    compileSdkVersion Integer.parseInt(project.mCompileSdkVersion)
+    buildToolsVersion mBuildToolsVersion
+    flavorDimensions "default"
+    defaultConfig {
+        vectorDrawables.useSupportLibrary = true
+        applicationId "com.example.myapplication"
+        minSdkVersion Integer.parseInt(project.mMinSdkVersion)
+        targetSdkVersion Integer.parseInt(project.mTargetSdkVersion)
+        versionCode Integer.parseInt(project.versionCode)
+        versionName project.versionName
+        multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            // Filter for architectures supported by Flutter.
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
+        }
+    }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+    buildTypes {
+        profile {
+            initWith debug
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+    packagingOptions {
+        exclude 'META-INF/main.kotlin_module'
+        exclude 'META-INF/atomicfu.kotlin_module'
+    }
+
+    namespace 'com.example.myapplication'
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+}
+
+dependencies {
+    implementation "com.android.support:appcompat-v7:28.0.0"
+    //zendesk
+    implementation group: 'com.zendesk', name: 'chat', version: '3.4.0'
+    implementation group: 'com.zendesk', name: 'messaging', version: '5.4.0'
+
+    //multidex
+    implementation "androidx.multidex:multidex:2.0.1"
+
+}
